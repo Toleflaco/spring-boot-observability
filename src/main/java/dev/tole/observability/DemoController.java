@@ -2,6 +2,7 @@ package dev.tole.observability;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -9,6 +10,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 
 @RestController
@@ -45,8 +47,8 @@ public class DemoController {
     }
 
     @GetMapping("/slow")
-    ResponseEntity<String> slow () throws InterruptedException {
-        long delayMs = ThreadLocalRandom.current().nextLong(100,2001);
+    ResponseEntity<String> slow() {
+        long delayMs = ThreadLocalRandom.current().nextLong(100, 2001);
         try {
             Thread.sleep(delayMs);
         } catch (InterruptedException e) {
@@ -54,8 +56,9 @@ public class DemoController {
             throw new IllegalStateException("Espera interrumpida", e);
         }
         log.atInfo()
-                .addKeyValue("delay_ms",delayMs)
+                .addKeyValue("delay_ms", delayMs)
                 .log("Respuesta lenta simulada");
         return ResponseEntity.ok("Respuesta lenta simulada");
+
     }
 }
