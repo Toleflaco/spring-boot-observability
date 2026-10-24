@@ -49,4 +49,9 @@ public class CorrelationIdFilter extends OncePerRequestFilter {
             MDC.remove(CORRELATION_ID);
         }
     }
+
+    @Override
+    protected boolean shouldNotFilter(HttpServletRequest request)  {
+        return (request.getRequestURI().startsWith("/actuator"));
+    }
 }
