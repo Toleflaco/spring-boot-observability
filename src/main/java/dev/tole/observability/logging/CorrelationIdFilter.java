@@ -44,7 +44,7 @@ public class CorrelationIdFilter extends OncePerRequestFilter {
                     .addKeyValue("status", response.getStatus())
                     .addKeyValue("method", request.getMethod())
                     .addKeyValue("endpoint", request.getRequestURI())
-                    .addKeyValue("duration_ms", (System.nanoTime()-inicio) /1_000_000 )
+                    .addKeyValue("duration_ms", (System.nanoTime() - inicio) / 1_000_000)
                     .log("Petición completada");
             MDC.remove(CORRELATION_ID);
         }
