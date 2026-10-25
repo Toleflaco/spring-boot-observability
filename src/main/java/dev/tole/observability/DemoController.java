@@ -2,6 +2,7 @@ package dev.tole.observability;
 
 import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.MeterRegistry;
+import io.micrometer.core.instrument.Timer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.time.Duration;
 import java.util.concurrent.ThreadLocalRandom;
 
 @RestController
@@ -18,10 +20,14 @@ public class DemoController {
 
     private static final Logger log = LoggerFactory.getLogger(DemoController.class);
     private final Counter itemsNotFound;
+    private final Timer slowWait;
 
     public DemoController(MeterRegistry registry) {
         this.itemsNotFound = Counter.builder("items.not.found")
                 .description("Búsqueda de items que no existen")
+                .register(registry);
+        this.slowWait = Timer.builder("slow.wait")
+                .description("Tiempo de espera simulado en /slow")
                 .register(registry);
     }
 
@@ -62,6 +68,7 @@ public class DemoController {
             Thread.currentThread().interrupt();   // restaura el aviso: no se lo "come"
             throw new IllegalStateException("Espera interrumpida", e);
         }
+        slowWait.record(Duration.ofMillis(delayMs));
         log.atInfo()
                 .addKeyValue("delay_ms", delayMs)
                 .log("Respuesta lenta simulada");
