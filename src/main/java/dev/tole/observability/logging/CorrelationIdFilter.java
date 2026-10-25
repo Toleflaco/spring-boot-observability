@@ -52,6 +52,6 @@ public class CorrelationIdFilter extends OncePerRequestFilter {
 
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request)  {
-        return (request.getRequestURI().startsWith("/actuator"));
+        return request.getRequestURI().startsWith("/actuator/");
     }
 }
