@@ -28,6 +28,7 @@ public class DemoController {
                 .register(registry);
         this.slowWait = Timer.builder("slow.wait")
                 .description("Tiempo de espera simulado en /slow")
+                .publishPercentiles(0.5, 0.95, 0.99)
                 .register(registry);
     }
 
