@@ -1,16 +1,15 @@
 package dev.tole.observability;
 
+import io.micrometer.core.instrument.Counter;
+import io.micrometer.core.instrument.MeterRegistry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.slf4j.MDC;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 
 @RestController
@@ -18,6 +17,13 @@ import java.util.concurrent.ThreadLocalRandom;
 public class DemoController {
 
     private static final Logger log = LoggerFactory.getLogger(DemoController.class);
+    private final Counter itemsNotFound;
+
+    public DemoController(MeterRegistry registry) {
+        this.itemsNotFound = Counter.builder("items.not.found")
+                .description("Búsqueda de items que no existen")
+                .register(registry);
+    }
 
     @GetMapping("/ok")
     String ok() {
@@ -38,6 +44,7 @@ public class DemoController {
                 .addKeyValue("itemId", id)
                 .addKeyValue("status", 404)
                 .log("Item no encontrado");
+        itemsNotFound.increment();
         return ResponseEntity.notFound().build();
     }
 
