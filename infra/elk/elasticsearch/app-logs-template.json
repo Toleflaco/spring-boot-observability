@@ -1,0 +1,24 @@
+{
+  "index_patterns": ["app-logs*"],
+  "template": {
+    "settings": {
+      "number_of_replicas": 0
+    },
+    "mappings": {
+      "properties": {
+        "@timestamp":    { "type": "date" },
+        "message":       { "type": "text" },
+        "level":         { "type": "keyword" },
+        "service":       { "type": "keyword" },
+        "environment":   { "type": "keyword" },
+        "correlationId": { "type": "keyword" },
+        "logger_name":   { "type": "keyword" },
+        "thread_name":   { "type": "keyword" },
+        "method":        { "type": "keyword" },
+        "endpoint":      { "type": "keyword" },
+        "status":        { "type": "integer" },
+        "duration_ms":   { "type": "long" }
+      }
+    }
+  }
+}

@@ -32,3 +32,6 @@ logs/
 
 ### VS Code ###
 .vscode/
+
+# Variables locales de los stacks (D63)
+.env

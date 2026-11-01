@@ -1,0 +1,41 @@
+server:
+  http_listen_port: 9080
+  grpc_listen_port: 0
+
+positions:
+  filename: /var/lib/promtail/positions.yaml
+
+clients:
+  - url: http://loki:3100/loki/api/v1/push
+
+scrape_configs:
+  - job_name: docker
+    docker_sd_configs:
+      - host: unix:///var/run/docker.sock      # el "teléfono" de Docker
+        refresh_interval: 5s                   # pregunta cada 5 s qué hay en marcha
+    relabel_configs:
+      # Regla 1: quedarse SOLO con los del proyecto grafana-stack
+      - source_labels: ['__meta_docker_container_label_com_docker_compose_project']
+        regex: 'grafana-stack'
+        action: keep
+      # Regla 2: copiar el nombre, sin la "/", a la etiqueta visible "container"
+      - source_labels: ['__meta_docker_container_name']
+        regex: '/(.*)'
+        target_label: 'container'
+      # Regla 3: etiqueta fija job="docker"
+      - target_label: 'job'
+        replacement: 'docker'  
+  - job_name: app
+    static_configs:
+      - targets:
+          - localhost
+        labels:
+          job: app
+          __path__: /var/log/app/*.log
+    pipeline_stages:
+      - json:                       # Paso 1: abre el JSON
+          expressions:
+            ts: '"@timestamp"'      #   saca @timestamp y llámalo "ts"
+      - timestamp:                  # Paso 2: usa "ts" como hora de la línea
+          source: ts
+          format: RFC3339Nano       #   formato 2026-10-30T08:04:41.097806251+01:00
