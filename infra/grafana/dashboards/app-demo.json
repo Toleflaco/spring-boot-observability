@@ -178,7 +178,7 @@
             "uid": "loki"
           },
           "editorMode": "code",
-          "expr": "sum(rate({job=\"app\"} | json | logger_name=\"dev.tole.observability.logging.CorrelationIdFilter\" | status >= 500 [5m]))\r\n/\r\nsum(rate({job=\"app\"} | json | logger_name=\"dev.tole.observability.logging.CorrelationIdFilter\" [5m]))",
+          "expr": "(sum(rate({job=\"app\"} | json | logger_name=\"dev.tole.observability.logging.CorrelationIdFilter\" | endpoint=~\"$uri\" | status >= 500 [5m])) or vector(0))\r\n/\r\nsum(rate({job=\"app\"} | json | logger_name=\"dev.tole.observability.logging.CorrelationIdFilter\" | endpoint=~\"$uri\" [5m]))",
           "queryType": "instant",
           "refId": "A"
         }
@@ -273,7 +273,7 @@
             "uid": "loki"
           },
           "editorMode": "code",
-          "expr": "sum by (endpoint) (\r\n  count_over_time({job=\"app\"} | json | logger_name=\"dev.tole.observability.logging.CorrelationIdFilter\" [5m])\r\n)",
+          "expr": "sum by (endpoint) (\r\n  count_over_time({job=\"app\"} | json | logger_name=\"dev.tole.observability.logging.CorrelationIdFilter\" | endpoint=~\"$uri\" [5m])\r\n)",
           "legendFormat": "{{endpoint}}",
           "queryType": "range",
           "refId": "A"
@@ -322,6 +322,6 @@
   "timezone": "browser",
   "title": "App demo – Observabilidad",
   "uid": "dg32fvldygdtse",
-  "version": 3,
+  "version": 4,
   "weekStart": ""
 }
