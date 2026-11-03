@@ -80,32 +80,7 @@
           },
           "unit": "s"
         },
-        "overrides": [
-          {
-            "__systemRef": "hideSeriesFrom",
-            "matcher": {
-              "id": "byNames",
-              "options": {
-                "mode": "exclude",
-                "names": [
-                  "histogram_quantile(0.95,\r\n  sum by (le) (\r\n    rate(http_server_requests_seconds_bucket{uri=~\"/api/demo/.*\"}[5m])\r\n  )\r\n)"
-                ],
-                "prefix": "All except:",
-                "readOnly": true
-              }
-            },
-            "properties": [
-              {
-                "id": "custom.hideFrom",
-                "value": {
-                  "legend": false,
-                  "tooltip": false,
-                  "viz": true
-                }
-              }
-            ]
-          }
-        ]
+        "overrides": []
       },
       "gridPos": {
         "h": 8,
@@ -134,7 +109,7 @@
             "uid": "prometheus"
           },
           "editorMode": "code",
-          "expr": "histogram_quantile(0.95,\r\n  sum by (le) (\r\n    rate(http_server_requests_seconds_bucket{uri=~\"/api/demo/.*\"}[5m])\r\n  )\r\n)",
+          "expr": "histogram_quantile(0.95,\r\n  sum by (le) (\r\n    rate(http_server_requests_seconds_bucket{uri=~\"$uri\"}[5m])\r\n  )\r\n)",
           "legendFormat": "p95",
           "range": true,
           "refId": "A"
@@ -175,7 +150,7 @@
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 0
+        "y": 8
       },
       "id": 2,
       "options": {
@@ -275,7 +250,7 @@
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 8
+        "y": 16
       },
       "id": 1,
       "options": {
@@ -312,7 +287,32 @@
   "schemaVersion": 40,
   "tags": [],
   "templating": {
-    "list": []
+    "list": [
+      {
+        "current": {
+          "text": "/api/demo/error",
+          "value": "/api/demo/error"
+        },
+        "datasource": {
+          "type": "prometheus",
+          "uid": "prometheus"
+        },
+        "definition": "label_values(http_server_requests_seconds_count{uri=~\"/api/demo/.*\"}, uri)",
+        "includeAll": true,
+        "label": "Endpoint",
+        "multi": true,
+        "name": "uri",
+        "options": [],
+        "query": {
+          "qryType": 5,
+          "query": "label_values(http_server_requests_seconds_count{uri=~\"/api/demo/.*\"}, uri)",
+          "refId": "PrometheusVariableQueryEditor-VariableQuery"
+        },
+        "refresh": 1,
+        "regex": "",
+        "type": "query"
+      }
+    ]
   },
   "time": {
     "from": "now-15m",
@@ -322,6 +322,6 @@
   "timezone": "browser",
   "title": "App demo – Observabilidad",
   "uid": "dg32fvldygdtse",
-  "version": 1,
+  "version": 3,
   "weekStart": ""
 }
