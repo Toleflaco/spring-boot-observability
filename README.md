@@ -55,7 +55,7 @@ Puertos por defecto; si los cambias en el `.env`, cambian aquí.
 | Prometheus | http://localhost:9090/targets |
 | Métricas de la app | http://localhost:8080/actuator/prometheus |
 
-El desplegable **uri** filtra los tres paneles.
+El desplegable **uri** filtra los paneles de peticiones, errores y latencia. La memoria heap es de toda la app y no depende de él.
 
 ## Cambiar el dashboard
 
